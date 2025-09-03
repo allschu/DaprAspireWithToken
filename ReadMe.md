@@ -2,16 +2,7 @@
 
 This repository demonstrates a working integration between **Dapr** and **.NET Aspire**, showcasing service-to-service communication with token-based authentication in a microservices architecture.
 
-## ??? Architecture Overview
-
-This solution consists of four main projects:
-
-- **DaprAspire.Web** - Blazor Server frontend application
-- **DaprAspire.ApiService** - Web API backend service
-- **DaprAspire.AppHost** - .NET Aspire orchestration host
-- **DaprAspire.ServiceDefaults** - Shared service defaults and configuration
-
-## ?? Security & Token Configuration
+## Security & Token Configuration
 
 The solution implements **token-based authentication** using Dapr's built-in authentication capabilities:
 
@@ -27,21 +18,8 @@ The solution implements **token-based authentication** using Dapr's built-in aut
 2. The **API service** validates incoming requests using `APP_API_TOKEN`
 3. Service-to-service communication is secured through Dapr's authentication middleware
 
-## ?? Project Structure
 
-```
-DaprAspire/
-??? DaprAspire.Web/              # Blazor Server frontend
-?   ??? WeatherApiClient.cs      # Dapr client for API communication
-?   ??? Program.cs               # Web app configuration
-??? DaprAspire.ApiService/       # Web API backend
-?   ??? Program.cs               # API service with Dapr authentication
-??? DaprAspire.AppHost/          # Aspire orchestration
-?   ??? AppHost.cs               # Service configuration & token setup
-??? DaprAspire.ServiceDefaults/  # Shared configurations
-```
-
-## ?? Key Features
+## Key Features
 
 ### Dapr Integration
 - **Service Invocation**: Direct service-to-service communication via Dapr
@@ -59,7 +37,7 @@ DaprAspire/
 - API endpoints are protected with `[RequireAuthorization]`
 - Weather forecast data is retrieved and displayed through the Blazor UI
 
-## ??? Setup & Running
+## Setup & Running
 
 ### Prerequisites
 - .NET 8 SDK
@@ -84,7 +62,7 @@ DaprAspire/
    - API Service: Available through Aspire dashboard
    - Aspire Dashboard: Typically at `https://localhost:5000`
 
-## ?? Configuration Details
+## Configuration Details
 
 ### AppHost Configuration (DaprAspire.AppHost/AppHost.cs)
 
@@ -94,14 +72,14 @@ const string daprApiToken = "8824A7E1-8A33-43C3-9F5D-54EC7FFA73FB";
 var apiService = builder.AddProject<Projects.DaprAspire_ApiService>("apiservice")
     .WithHttpHealthCheck("/health")
     .WithDaprSidecar()
-    .WithEnvironment("APP_API_TOKEN", daprApiToken);
+    .WithEnvironment("APP_API_TOKEN", daprApiToken); // <-- IMPORTANT >
 
 builder.AddProject<Projects.DaprAspire_Web>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
     .WithReference(apiService)
     .WithDaprSidecar()
-    .WithEnvironment("DAPR_API_TOKEN", daprApiToken);
+    .WithEnvironment("DAPR_API_TOKEN", daprApiToken); // <-- IMPORTANT >
 ```
 
 ### API Service Authentication
@@ -128,25 +106,16 @@ await client.InvokeMethodAsync<List<WeatherForecast>>(
     cancellationToken);
 ```
 
-## ?? Use Cases
+## Security Notes
 
-This example demonstrates:
-
-- **Microservices Architecture**: Separation of concerns between web UI and API
-- **Secure Communication**: Token-based authentication between services
-- **Service Mesh**: Dapr sidecar pattern for cross-cutting concerns
-- **Cloud-Native Development**: .NET Aspire for local development and orchestration
-
-## ?? Security Notes
-
-?? **Important**: The tokens used in this example are for demonstration purposes only. In production environments:
+**Important**: The tokens used in this example are for demonstration purposes only. In production environments:
 
 - Use secure, randomly generated tokens
 - Store tokens in secure configuration (Azure Key Vault, etc.)
 - Implement token rotation policies
 - Use different tokens for different environments
 
-## ?? Learn More
+## SOURCES & REFERENCES
 
 - [.NET Aspire Documentation](https://learn.microsoft.com/en-us/dotnet/aspire/)
 - [Dapr Documentation](https://docs.dapr.io/)
