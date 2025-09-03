@@ -67,6 +67,8 @@ The solution implements **token-based authentication** using Dapr's built-in aut
 ### AppHost Configuration (DaprAspire.AppHost/AppHost.cs)
 
 ```csharp
+
+// FAKE DO NOT USE THIS TOKEN IN PRODUCTION!
 const string daprApiToken = "8824A7E1-8A33-43C3-9F5D-54EC7FFA73FB";
 
 var apiService = builder.AddProject<Projects.DaprAspire_ApiService>("apiservice")
